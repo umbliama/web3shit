@@ -1,58 +1,115 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import "./App.scss";
+import { fetchData, fetchStats, fetchTokenByID } from "./app/api";
+import Header from "./components/Header/Header";
+import { SearchNSort } from "./components/SortNSearch/SortNSearch";
+import Stats from "./components/Stats/Stats";
+import Collection from "./views/Collection/Collection";
+import Filter from "./views/Filter/Filter";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import { Container } from "@mui/material";
 
-function App() {
+interface State {
+  apiCollectionReducer: {
+    data: Object[];
+    stats: {
+      traits: Object[];
+    };
+  };
+  apiReducer: {
+    isReady: boolean;
+  };
+  filterReducer: {
+    sort: string;
+    filterIsOpen: boolean;
+  };
+}
+const App = () => {
+  const dispatch = useDispatch();
+
+  const data = useSelector<State, any>(
+    (state) => state.apiCollectionReducer.data
+  );
+
+  const stateTraits = useSelector<State, any>(
+    (state) => state.apiCollectionReducer
+  );
+
+  const { limit, tokenIdFirst, tokenIdLast, continuation } = useSelector<
+    State,
+    any
+  >((state) => state.apiCollectionReducer);
+
+  const { sort, filterValue, filterIsOpen, filteredData } = useSelector<
+    State,
+    any
+  >((state) => state.filterReducer);
+
+  const stateRef = useRef();
+  stateRef.current = continuation;
+
+  useEffect(() => {
+    // dispatch(fetchStats());
+    dispatch(fetchData());
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+
+      if (scrollTop + clientHeight >= scrollHeight && stateRef.current) {
+        console.log(scrollTop + clientHeight);
+        dispatch(fetchData(stateRef.current));
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [dispatch, filterValue]);
+
+  if (!data && !stateTraits) {
+    return <div>Loading</div>;
+  }
+
+  const toggleFilter = () => {
+    dispatch({ type: "TOGGLE_FILTER" });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <Header />
+      <Stats />
+      <SearchNSort />
+      <div
+        style={{
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <button className="button button--filter" onClick={toggleFilter}>
+          <FilterAltIcon />
+          Filter
+        </button>
+        <div style={{ display: "flex", margin: "100px 0 0 0" }}>
+          <div style={{ display: "flex", flexDirection: "column" }}></div>
+          {/* {!stateTraits ? (
+            <div>Loading...</div>
+          ) : filterIsOpen ? (
+            <Filter items={stateTraits} />
+          ) : (
+            <div></div>
+          )} */}
+
+          {filterValue ? (
+            <Collection items={filteredData} />
+          ) : (
+            <Collection items={data} />
+          )}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default App;

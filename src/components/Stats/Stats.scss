@@ -1,0 +1,19 @@
+.stats {
+    background:#101010;
+    color: #f1f4f5;
+    &-container {
+        padding: 0 40px 100px;
+    }
+    &-table {
+        display: grid;
+        justify-content: start;
+        justify-items: start;
+    }   
+
+    &-item {
+        margin: 0 50px 0 ;
+    }
+    &-row {
+        display: flex;
+    }
+}

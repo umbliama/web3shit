@@ -1,0 +1,76 @@
+@font-face {
+  font-family: 'Helvetica-r';
+  src: local("Helvetica"), url("./fonts/HelveticaNowDisplay/HelveticaNowDisplay-Regular.ttf")
+   format("trutype");
+}
+
+body {
+  background: #101010;
+
+}
+
+.button{
+  &--filter{
+    margin: 30px 0 0 0;
+    background: #FF5733 ;
+    padding: 10px;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    outline: none;
+    max-width: 100px;
+
+justify-content: center;    align-items: center;
+    display: flex;
+    &:hover {
+      background-color: #E64A19;
+    }
+  }
+}
+
+.App {
+  text-align: center;
+  background: #101010;
+  font-family: Helvetica-r;  
+  padding: 0 20px;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-float infinite 3s ease-in-out;
+  }
+}
+
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+.App-link {
+  color: rgb(112, 76, 182);
+}
+
+@keyframes App-logo-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
